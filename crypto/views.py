@@ -1,31 +1,43 @@
 from django.shortcuts import render
 
+# Create your views here.
+
+
+def converter(request):
+    return render(request, 'converter.html', {})
+
+
 def home(request):
-	import requests 
-	import json
+    import requests
+    import json
 
-	#Grab Crypto Price Data
-	price_request = requests.get("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,USDT,XRP,LINK&tsyms=USD")
-	price = json.loads(price_request.content)
+    price_request = requests.get(
+        "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,USDT,XRP,LTC,LINK,BCH,DOT,BNB,ADA&tsyms=USD")
+    price = json.loads(price_request.content)
+    return render(request, 'home.html', {'price': price})
 
-	#Grab Crypto News
-	api_request = requests.get("https://min-api.cryptocompare.com/data/v2/news/?lang=EN")
-	api = json.loads(api_request.content)
-	return render(request, 'home.html', {'api':api, 'price': price})
+
+def base(request):
+    import requests
+    import json
+
+    price_request = requests.get(
+        "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=BTC,ETH,USDT,XRP&tsyms=USD")
+    price = json.loads(price_request.content)
+    return render(request, 'base.html', {'price': price})
 
 
 def prices(request):
-	if request.method == 'POST':
-		import requests 
-		import json
-		quote = request.POST.get('quote')
-		quote = quote.upper()
-		crypto_request = requests.get("https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" +quote + "&tsyms=USD")
-		crypto = json.loads(crypto_request.content)
+    if request.method == 'POST':
+        import requests
+        import json
+        quote = request.POST['quote']
+        quote = quote.upper()
+        crypto_request = requests.get(
+            "https://min-api.cryptocompare.com/data/pricemultifull?fsyms=" + quote + "&tsyms=USD")
+        crypto = json.loads(crypto_request.content)
+        return render(request, 'prices.html', {'quote': quote, 'crypto': crypto})
 
-		return render(request, 'prices.html', {'quote':quote, 'crypto':crypto})
-
-
-	else:	
-		notfound = "Enter a crypto currency symbol into the form above..."
-		return render(request, 'prices.html', {'notfound': notfound})
+    else:
+        notfound = "Enter a crypto symbol"
+        return render(request, 'prices.html', {'notfound': notfound})

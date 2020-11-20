@@ -1,42 +1,68 @@
 {% extends 'base.html' %}
 
-
 {% block content %}
+    {% if notfound %}
+        {{ notfound }}
+    {% else %}
+    {% for key, value in crypto.DISPLAY.items %}
+
+    <h2 class="text-primary">{{ key }}</h2><br>
+    <h5>Price : {{ value.USD.PRICE }} </h5>
+    <h5>Daily high : {{ value.USD.HIGHDAY }}</h5>
+    <h5>Daily low : {{ value.USD.LOWDAY }}</h5>
+    <h5>Marketcap : {{ value.USD.MKTCAP }}</h5>
+    <h5>High for 24 hours : {{ value.USD.HIGH24HOUR }}</h5>
+    <h5>Low for 24 hours : {{ value.USD.LOW24HOUR }}</h5>
+    <h5>Total volume for 24 hours : {{ value.USD.TOTALVOLUME24HTO }}</h5>
+    <br><br>
+
+    <hr>
+
+    <div class="container">
+        <h6>Convert crypto to <span>USD</span></h6>
+        <div class="row">
+            <input id="cr_c" style="margin-right: 20px;" class="input-group-text" type="text">
+            <button type="button" class="btn btn-primary" onclick="count()">convert</button>
+           
+            <h5 style="margin: 5px 0 0 20px" id="out_1"></h5>
+        </div>
+        <br>
+        <h6>Convert USD to crypto</h6>
+        <div class="row">
+            <input id="us_c" style="margin-right: 20px;" class="input-group-text" type="text">
+            <button type="button" class="btn btn-primary" onclick="count2()">convert</button>
+            
+            <h5 style="margin: 5px 0 0 20px" id="out_2"></h5>
+        </div>
+    </div>
+   
+    
+    <script>
+        var num1, num2, resutl;
+        num1 = "{{ value.USD.PRICE }}".replace(/[^.0-9]/gim,'');
+
+        function count(){
+            num2 = document.getElementById('cr_c').value;
+            num2 = parseInt(num2);
+
+            result = num1 * num2;
+            
+            document.getElementById('out_1').innerHTML = (parseInt(result * 10000)) / 10000  + '$';
+        }
+
+        function count2(){
+            num2 = document.getElementById('us_c').value;
+            num2 = parseInt(num2);
+
+            result = num2 / num1;
+            
+            document.getElementById('out_2').innerHTML = ((parseInt(result * 10000)) / 10000) + ' {{ key }}' ;
+        }
+    </script>
+    {% endfor %}
 
 
-	{% if notfound %}
-		
-		{{ notfound }}
-
-
-
-
-
-
-	{% else %}
-		{% if crypto.Response %}
-			Sorry, {{ quote }} doesn`t exist. Please Tru Again...
-		{% endif %}
-		{% for key,value in crypto.DISPLAY.items %}
-
-
-	        <div class="jumbotron">
-			  <h1 class="display-4">{{ key }}</h1>
-			  <strong>Name</strong>: {{ key }}<br/>
-		      <strong>Price</strong>: {{ value.USD.PRICE }}<br/>
-		      <strong>Day High</strong>: {{ value.USD.HIGHDAY }}<br/>
-		      <strong>Day Low</strong>: {{ value.USD.LOWDAY }}<br/>
-		      <strong>Market Cap</strong>: {{ value.USD.MKTCAP }}<br/>
-			</div>
-			<br/><br/>
-
-		 {% endfor %}
-
-	 {% endif %}
-
-<br/><br/>
-
-
-
+    
+    {% endif%}
 
 {% endblock %}
